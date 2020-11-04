@@ -1,0 +1,16 @@
+pydantic==1.7.2
+fastapi
+uvicorn
+redis
+pytest==6.1.2
+requests
+coverage
+pytest-env
+python-dotenv==0.15.0
+
+
+
+
+
+
+
