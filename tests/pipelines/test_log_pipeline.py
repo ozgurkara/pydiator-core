@@ -18,7 +18,7 @@ class TestLogPipeline(BaseTestCase):
             self.async_loop(log_pipeline.handle(TestRequest()))
 
         # Then
-        assert context.exception.args[0] == 'pydiator_log_pipeline_next_error'
+        assert context.exception.args[0] == 'pydiator_log_pipeline_has_no_next_pipeline'
 
     def test_handle_when_response_is_str(self):
         # Given
@@ -63,7 +63,7 @@ class TestLogPipeline(BaseTestCase):
         assert mock_serializer.deserialize.called
         assert mock_serializer.deserialize.call_count == 2
 
-    @mock.patch("app.pydiator.pipelines.log_pipeline.Serializer")
+    @mock.patch("pydiator_core.pipelines.log_pipeline.Serializer")
     def test_handle_when_response_type_is_list(self, mock_serializer):
         # Given
         next_response = [TestResponse(success=True)]

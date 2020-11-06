@@ -8,7 +8,7 @@ class LogPipeline(BasePipeline):
         print(f"LogPipeline:handle:{type(req).__name__}")
 
         if self.next() is None:
-            raise Exception("pydiator_log_pipeline_next_error")
+            raise Exception("pydiator_log_pipeline_has_no_next_pipeline")
 
         response = await self.next().handle(req)
 

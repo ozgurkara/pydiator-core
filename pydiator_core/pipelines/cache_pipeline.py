@@ -10,7 +10,7 @@ class CachePipeline(BasePipeline):
         print(f"CachePipeline:handle:{type(req).__name__}")
 
         if self.next() is None:
-            raise Exception("pydiator_cache_pipeline_next_error")
+            raise Exception("pydiator_cache_pipeline_has_no_next_pipeline")
 
         response = None
 

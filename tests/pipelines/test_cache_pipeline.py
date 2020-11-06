@@ -19,7 +19,7 @@ class TestCachePipeline(BaseTestCase):
             self.async_loop(cache_pipeline.handle(TestRequest()))
 
         # Then
-        assert context.exception.args[0] == 'pydiator_cache_pipeline_next_error'
+        assert context.exception.args[0] == 'pydiator_cache_pipeline_has_no_next_pipeline'
 
     def test_handle_when_req_is_no_cache(self):
         # Given
