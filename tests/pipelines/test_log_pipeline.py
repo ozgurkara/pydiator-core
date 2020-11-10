@@ -2,11 +2,15 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 from pydiator_core.pipelines.log_pipeline import LogPipeline
+from pydiator_core.serializer import SerializerFactory
 from tests.base_test_case import BaseTestCase, TestRequest, TestResponse
 
 
 class TestLogPipeline(BaseTestCase):
     def setUp(self):
+        SerializerFactory.set_serializer(None)
+
+    def tearDown(self):
         pass
 
     def test_handle_return_exception_when_next_is_none(self):
@@ -40,8 +44,8 @@ class TestLogPipeline(BaseTestCase):
         assert response is not None
         assert response == next_response_text
 
-    @mock.patch("app.pydiator.pipelines.log_pipeline.Serializer")
-    def test_handle_when_response_is_instance_of_dict(self, mock_serializer):
+    @mock.patch("pydiator_core.pipelines.log_pipeline.SerializerFactory")
+    def test_handle_when_response_is_instance_of_dict(self, mock_serializer_factory):
         # Given
         next_response = TestResponse(success=True)
 
@@ -60,11 +64,12 @@ class TestLogPipeline(BaseTestCase):
         # Then
         assert response is not None
         assert response == next_response
-        assert mock_serializer.deserialize.called
-        assert mock_serializer.deserialize.call_count == 2
+        assert mock_serializer_factory.get_serializer.called
+        assert mock_serializer_factory.get_serializer.return_value.deserialize.called
+        assert mock_serializer_factory.get_serializer.return_value.deserialize.call_count == 2
 
-    @mock.patch("pydiator_core.pipelines.log_pipeline.Serializer")
-    def test_handle_when_response_type_is_list(self, mock_serializer):
+    @mock.patch("pydiator_core.pipelines.log_pipeline.SerializerFactory")
+    def test_handle_when_response_type_is_list(self, mock_serializer_factory):
         # Given
         next_response = [TestResponse(success=True)]
 
@@ -84,5 +89,6 @@ class TestLogPipeline(BaseTestCase):
         assert response is not None
         assert response == next_response
         assert len(response) == 1
-        assert mock_serializer.deserialize.called
-        assert mock_serializer.deserialize.call_count == 2
+        assert mock_serializer_factory.get_serializer.called
+        assert mock_serializer_factory.get_serializer.return_value.deserialize.called
+        assert mock_serializer_factory.get_serializer.return_value.deserialize.call_count == 2

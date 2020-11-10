@@ -1,13 +1,18 @@
 from unittest import mock
+from unittest.mock import MagicMock
 
 from pydiator_core.interfaces import BaseNotification
 from pydiator_core.mediatr import Mediatr
+from pydiator_core.serializer import SerializerFactory, BaseSerializer
 from tests.base_test_case import BaseTestCase, TestRequest, TestResponse, FakeMediatrContainer, TestNotification
 
 
 class TestMediatrContainer(BaseTestCase):
 
     def setUp(self):
+        SerializerFactory.set_serializer(None)
+
+    def tearDown(self):
         pass
 
     def test_read_default_values_when_create_instance(self):
@@ -17,7 +22,6 @@ class TestMediatrContainer(BaseTestCase):
         mediatr = Mediatr()
 
         # Then
-        assert mediatr.mediatr_container is None
         assert mediatr.is_ready is False
 
     def test_ready_when_is_ready(self):
@@ -26,10 +30,10 @@ class TestMediatrContainer(BaseTestCase):
         mediatr.is_ready = True
 
         # When
-        mediatr.ready({})
+        mediatr.ready(container=None)
 
         # Then
-        assert mediatr.mediatr_container is None
+        assert mediatr.is_ready
 
     def test_ready_when_is_not_ready(self):
         # Given
@@ -37,11 +41,60 @@ class TestMediatrContainer(BaseTestCase):
         mediatr = Mediatr()
 
         # When
-        mediatr.ready(mediatr_container)
+        mediatr.ready(container=mediatr_container)
 
         # Then
-        assert mediatr.mediatr_container is mediatr_container
         assert mediatr.is_ready
+        assert len(mediatr_container.get_pipelines()) == 1
+
+    def test_ready_when_container_is_none(self):
+        # Given
+        mediatr = Mediatr()
+
+        # When
+        with self.assertRaises(Exception) as context:
+            mediatr.ready(container=None)
+
+        # Then
+        assert mediatr.is_ready is False
+        assert 'mediatr_container_is_none' == context.exception.args[0]
+
+    def test_ready_when_serializer_is_not_none(self):
+        # Given
+        mediatr_container = FakeMediatrContainer()
+        mediatr = Mediatr()
+
+        # When
+        mediatr.ready(container=mediatr_container, serializer={})
+
+        # Then
+        assert mediatr.is_ready is True
+        assert SerializerFactory.get_serializer() == {}
+
+    def test_ready_when_serializer_is_none(self):
+        # Given
+        mediatr_container = FakeMediatrContainer()
+        mediatr = Mediatr()
+
+        # When
+        mediatr.ready(container=mediatr_container)
+
+        # Then
+        assert mediatr.is_ready is True
+        assert isinstance(SerializerFactory.get_serializer(), BaseSerializer)
+
+    def test_ready_when_container_and_serializer_set(self):
+        # Given
+        mediatr_container = FakeMediatrContainer()
+        mediatr = Mediatr()
+
+        # When
+        mediatr.ready(container=mediatr_container, serializer={})
+
+        # Then
+        assert mediatr.is_ready is True
+        assert not isinstance(SerializerFactory.get_serializer(), BaseSerializer)
+        assert SerializerFactory.get_serializer() == {}
         assert len(mediatr_container.get_pipelines()) == 1
 
     def test_send_raise_exception_when_container_is_none(self):
@@ -57,8 +110,10 @@ class TestMediatrContainer(BaseTestCase):
 
     def test_send_raise_exception_when_container_pipelines_is_empty(self):
         # Given
+        container = MagicMock()
+        container.get_pipelines.return_value = []
         mediatr = Mediatr()
-        mediatr.mediatr_container = FakeMediatrContainer()
+        mediatr.ready(container=container)
 
         # When
         with self.assertRaises(Exception) as context:

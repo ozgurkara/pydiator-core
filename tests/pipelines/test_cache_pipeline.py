@@ -3,11 +3,14 @@ from unittest.mock import MagicMock
 from pydiator_core.interfaces import CacheType
 from pydiator_core.pipelines.cache_pipeline import CachePipeline
 from tests.base_test_case import BaseTestCase, TestRequest, TestPipeline, TestRequestWithCacheable, TestResponse
-from pydiator_core.serializer import Serializer
+from pydiator_core.serializer import SerializerFactory
 
 
 class TestCachePipeline(BaseTestCase):
     def setUp(self):
+        SerializerFactory.set_serializer(None)
+
+    def tearDown(self):
         pass
 
     def test_handle_return_exception_when_next_is_none(self):
@@ -109,7 +112,8 @@ class TestCachePipeline(BaseTestCase):
         assert isinstance(response, TestResponse)
         assert response == next_response
         mock_cache_provider.get.assert_called_once_with(test_request.get_cache_key())
-        mock_cache_provider.add.assert_called_once_with(test_request.get_cache_key(), Serializer.dumps(next_response),
+        mock_cache_provider.add.assert_called_once_with(test_request.get_cache_key(),
+                                                        SerializerFactory.get_serializer().dumps(next_response),
                                                         test_request.get_cache_duration())
 
     def test_handle_when_req_result_is_in_cache(self):
@@ -117,7 +121,7 @@ class TestCachePipeline(BaseTestCase):
         next_response = TestResponse(success=True)
 
         mock_cache_provider = MagicMock()
-        mock_cache_provider.get.return_value = Serializer.dumps(next_response)
+        mock_cache_provider.get.return_value = SerializerFactory.get_serializer().dumps(next_response)
 
         cache_pipeline = CachePipeline(mock_cache_provider)
         cache_pipeline.set_next(TestPipeline(True))

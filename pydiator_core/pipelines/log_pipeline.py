@@ -1,9 +1,12 @@
 from typing import List
 from pydiator_core.interfaces import BaseRequest, BasePipeline
-from pydiator_core.serializer import Serializer
+from pydiator_core.serializer import SerializerFactory
 
 
 class LogPipeline(BasePipeline):
+    def __init__(self):
+        self.serializer = SerializerFactory.get_serializer()
+
     async def handle(self, req: BaseRequest) -> object:
         print(f"LogPipeline:handle:{type(req).__name__}")
 
@@ -13,12 +16,12 @@ class LogPipeline(BasePipeline):
         response = await self.next().handle(req)
 
         if hasattr(response, "__dict__") or isinstance(response, List):
-            _response = Serializer.deserialize(response)
+            _response = self.serializer.deserialize(response)
         else:
             _response = str(response)
 
         log_obj = {
-            "req": Serializer.deserialize(req),
+            "req": self.serializer.deserialize(req),
             "res": _response
         }
 

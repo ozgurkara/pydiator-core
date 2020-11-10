@@ -1,10 +1,11 @@
 from pydiator_core.interfaces import BaseRequest, BasePipeline, BaseCacheable, CacheType, BaseCacheProvider
-from pydiator_core.serializer import Serializer
+from pydiator_core.serializer import SerializerFactory
 
 
 class CachePipeline(BasePipeline):
     def __init__(self, cache_provider: BaseCacheProvider) -> None:
         self.cache_provider = cache_provider
+        self.serializer = SerializerFactory.get_serializer()
 
     async def handle(self, req: BaseRequest) -> object:
         print(f"CachePipeline:handle:{type(req).__name__}")
@@ -38,11 +39,11 @@ class CachePipeline(BasePipeline):
     def __get_from_cache(self, cache_key) -> object:
         cached_obj_str = self.cache_provider.get(cache_key)
         if cached_obj_str is not None:
-            return Serializer.loads(cached_obj_str)
+            return self.serializer.loads(cached_obj_str)
 
         return None
 
     def __add_to_cache(self, res: object, cache_key, cache_duration):
-        res_value_obj = Serializer.dumps(res)
+        res_value_obj = self.serializer.dumps(res)
         if res_value_obj is not None:
             self.cache_provider.add(cache_key, res_value_obj, cache_duration)

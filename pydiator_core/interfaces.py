@@ -2,16 +2,10 @@ import enum
 
 from abc import ABC, abstractmethod
 from typing import List
-
 from pydiator_core.serializer import JsonSerializable
 
 
 class BaseRequest:
-    def __init__(self):
-        pass
-
-
-class BaseNotification:
     def __init__(self):
         pass
 
@@ -27,6 +21,11 @@ class BaseHandler(ABC):
 
     @abstractmethod
     async def handle(self, req: BaseRequest):
+        pass
+
+
+class BaseNotification:
+    def __init__(self):
         pass
 
 
@@ -156,3 +155,6 @@ class BaseCacheProvider(ABC):
     @abstractmethod
     def check_connection(self):
         pass
+
+
+
