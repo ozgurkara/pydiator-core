@@ -5,7 +5,6 @@ from pydiator_core.serializer import SerializerFactory
 class CachePipeline(BasePipeline):
     def __init__(self, cache_provider: BaseCacheProvider) -> None:
         self.cache_provider = cache_provider
-        self.serializer = SerializerFactory.get_serializer()
 
     async def handle(self, req: BaseRequest) -> object:
         print(f"CachePipeline:handle:{type(req).__name__}")
@@ -19,7 +18,6 @@ class CachePipeline(BasePipeline):
             if req.is_no_cache() is False:
                 cache_key = req.get_cache_key()
                 if cache_key is not None and cache_key != "":
-
                     cache_type = req.get_cache_type()
                     if cache_type == CacheType.DISTRIBUTED:
                         cached_obj = self.__get_from_cache(cache_key)
@@ -39,11 +37,15 @@ class CachePipeline(BasePipeline):
     def __get_from_cache(self, cache_key) -> object:
         cached_obj_str = self.cache_provider.get(cache_key)
         if cached_obj_str is not None:
-            return self.serializer.loads(cached_obj_str)
+            return self.__get_serializer().loads(cached_obj_str)
 
         return None
 
     def __add_to_cache(self, res: object, cache_key, cache_duration):
-        res_value_obj = self.serializer.dumps(res)
+        res_value_obj = self.__get_serializer().dumps(res)
         if res_value_obj is not None:
             self.cache_provider.add(cache_key, res_value_obj, cache_duration)
+
+    @staticmethod
+    def __get_serializer():
+        return SerializerFactory.get_serializer()
