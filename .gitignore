@@ -2,3 +2,10 @@ venv
 .data
 .pytest_cache
 htmlcov
+
+dist
+build
+.idea
+.eggs
+pydiator_core.egg-info
+pydiator_core_test.egg-info
