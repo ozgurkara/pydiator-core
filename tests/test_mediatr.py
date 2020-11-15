@@ -37,15 +37,15 @@ class TestMediatrContainer(BaseTestCase):
 
     def test_ready_when_is_not_ready(self):
         # Given
-        mediatr_container = FakeMediatrContainer()
+        container = FakeMediatrContainer()
         mediatr = Mediatr()
 
         # When
-        mediatr.ready(container=mediatr_container)
+        mediatr.ready(container=container)
 
         # Then
         assert mediatr.is_ready
-        assert len(mediatr_container.get_pipelines()) == 1
+        assert len(container.get_pipelines()) == 1
 
     def test_ready_when_container_is_none(self):
         # Given
@@ -61,11 +61,11 @@ class TestMediatrContainer(BaseTestCase):
 
     def test_ready_when_serializer_is_not_none(self):
         # Given
-        mediatr_container = FakeMediatrContainer()
+        container = FakeMediatrContainer()
         mediatr = Mediatr()
 
         # When
-        mediatr.ready(container=mediatr_container, serializer={})
+        mediatr.ready(container=container, serializer={})
 
         # Then
         assert mediatr.is_ready is True
@@ -85,17 +85,17 @@ class TestMediatrContainer(BaseTestCase):
 
     def test_ready_when_container_and_serializer_set(self):
         # Given
-        mediatr_container = FakeMediatrContainer()
+        container = FakeMediatrContainer()
         mediatr = Mediatr()
 
         # When
-        mediatr.ready(container=mediatr_container, serializer={})
+        mediatr.ready(container=container, serializer={})
 
         # Then
         assert mediatr.is_ready is True
         assert not isinstance(SerializerFactory.get_serializer(), BaseSerializer)
         assert SerializerFactory.get_serializer() == {}
-        assert len(mediatr_container.get_pipelines()) == 1
+        assert len(container.get_pipelines()) == 1
 
     def test_send_raise_exception_when_container_is_none(self):
         # Given
@@ -131,9 +131,9 @@ class TestMediatrContainer(BaseTestCase):
             return next_response
 
         mock_default_pipeline.return_value.handle = next_handle
-        mediatr_container = FakeMediatrContainer()
+        container = FakeMediatrContainer()
         mediatr = Mediatr()
-        mediatr.ready(mediatr_container)
+        mediatr.ready(container)
 
         # When
         response = self.async_loop(mediatr.send(TestRequest()))
@@ -144,10 +144,10 @@ class TestMediatrContainer(BaseTestCase):
 
     def test_publish_when_handlers_is_empty(self):
         # Given
-        mediatr_container = FakeMediatrContainer()
+        container = FakeMediatrContainer()
         mediatr = Mediatr()
-        mediatr_container.register_notification(TestNotification(), [])
-        mediatr.ready(mediatr_container)
+        container.register_notification(TestNotification(), [])
+        mediatr.ready(container)
 
         # When
         with self.assertRaises(Exception) as context:
@@ -165,11 +165,11 @@ class TestMediatrContainer(BaseTestCase):
         mock_notification_handler = mock.MagicMock()
         mock_notification_handler.handle.side_effect = next_handle
 
-        mediatr_container = FakeMediatrContainer()
-        mediatr_container.register_notification(TestNotification(), [mock_notification_handler])
+        container = FakeMediatrContainer()
+        container.register_notification(TestNotification(), [mock_notification_handler])
 
         mediatr = Mediatr()
-        mediatr.ready(mediatr_container)
+        mediatr.ready(container)
 
         # When
         self.async_loop(mediatr.publish(TestNotification()))
@@ -186,11 +186,11 @@ class TestMediatrContainer(BaseTestCase):
         mock_notification_handler = mock.MagicMock()
         mock_notification_handler.handle.side_effect = next_handle
 
-        mediatr_container = FakeMediatrContainer()
-        mediatr_container.register_notification(TestNotification(), [mock_notification_handler])
+        container = FakeMediatrContainer()
+        container.register_notification(TestNotification(), [mock_notification_handler])
 
         mediatr = Mediatr()
-        mediatr.ready(mediatr_container)
+        mediatr.ready(container)
 
         # When
         self.async_loop(mediatr.publish(notification=TestNotification()))
@@ -207,11 +207,11 @@ class TestMediatrContainer(BaseTestCase):
         mock_notification_handler = mock.MagicMock()
         mock_notification_handler.handle.side_effect = next_handle
 
-        mediatr_container = FakeMediatrContainer()
-        mediatr_container.register_notification(TestNotification(), [mock_notification_handler])
+        container = FakeMediatrContainer()
+        container.register_notification(TestNotification(), [mock_notification_handler])
 
         mediatr = Mediatr()
-        mediatr.ready(mediatr_container)
+        mediatr.ready(container)
 
         # When
         with self.assertRaises(Exception) as context:

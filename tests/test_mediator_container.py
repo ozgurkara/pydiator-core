@@ -1,10 +1,14 @@
 from pydiator_core.mediatr_container import MediatrContainer
+from pydiator_core.interfaces import BaseRequest, BaseNotification
 from tests.base_test_case import BaseTestCase, TestPipeline, TestRequest, TestResponse, TestHandler, TestNotification, \
     TestNotificationHandler
 
 
 class TestMediatrContainer(BaseTestCase):
     def setUp(self):
+        pass
+
+    def tearDown(self):
         pass
 
     def test_read_default_values_when_create_instance(self):
@@ -17,6 +21,8 @@ class TestMediatrContainer(BaseTestCase):
         assert container.get_requests() == {}
         assert container.get_notifications() == {}
         assert container.get_pipelines() == []
+        assert container._MediatrContainer__base_notification_get_class_method_name == BaseNotification.get_class_name.__name__
+        assert container._MediatrContainer__base_notification_get_class_method_name == BaseRequest.get_class_name.__name__
 
     def test_register_pipeline(self):
         # Given
@@ -52,29 +58,41 @@ class TestMediatrContainer(BaseTestCase):
         container = MediatrContainer()
 
         # When
-        container.register_notification(TestNotification(), [TestNotificationHandler()])
+        container.register_notification(TestNotification, [TestNotificationHandler()])
 
         # Then
         assert container.get_requests() == {}
         assert container.get_pipelines() == []
         assert len(container.get_notifications()) == 1
 
+    def test_register_notification_when_notification__is_not_instance_of_base_notification(self):
+        # Given
+        container = MediatrContainer()
+
+        # When
+        container.register_notification(MediatrContainer, [TestNotificationHandler()])
+        response = container.get_notifications()
+
+        # Then
+        assert container.get_requests() == {}
+        assert container.get_pipelines() == []
+        assert len(response) == 0
+
     def test_get_notifications(self):
         # Given
         container = MediatrContainer()
-        notification = TestNotification()
         handlers = [TestNotificationHandler()]
 
         # When
-        container.register_notification(notification, handlers)
+        container.register_notification(TestNotification, handlers)
         response = container.get_notifications()
 
         # Then
         assert container.get_requests() == {}
         assert container.get_pipelines() == []
         assert len(response) == 1
-        assert response[type(notification).__name__] is not None
-        assert response[type(notification).__name__] == handlers
+        assert response[TestNotification.get_class_name()] is not None
+        assert response[TestNotification.get_class_name()] == handlers
 
     def test_register_request(self):
         # Given
@@ -83,13 +101,13 @@ class TestMediatrContainer(BaseTestCase):
         container = MediatrContainer()
 
         # When
-        container.register_request(req=request, handler=handler)
+        container.register_request(req=TestRequest, handler=handler)
 
         # Then
         assert container.get_notifications() == {}
         assert len(container.get_requests()) == 1
-        assert container.get_requests()[type(request).__name__] is not None
-        assert container.get_requests()[type(request).__name__] == handler
+        assert container.get_requests()[TestRequest.get_class_name()] is not None
+        assert container.get_requests()[TestRequest.get_class_name()] == handler
 
     def test_register_request_return_when_request_is_not_instance_of_base_request(self):
         # Given
@@ -97,18 +115,17 @@ class TestMediatrContainer(BaseTestCase):
         container = MediatrContainer()
 
         # When
-        container.register_request(req=TestResponse(success=True), handler=handler)
+        container.register_request(req=TestResponse, handler=handler)
 
         # Then
         assert len(container.get_requests()) == 0
 
     def test_register_request_return_when_handler_is_not_instance_of_base_handler(self):
         # Given
-        request = TestRequest()
         container = MediatrContainer()
 
         # When
-        container.register_request(req=request, handler={})
+        container.register_request(req=TestRequest, handler={})
 
         # Then
         assert len(container.get_requests()) == 0

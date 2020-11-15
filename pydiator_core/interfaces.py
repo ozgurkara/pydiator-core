@@ -9,6 +9,10 @@ class BaseRequest:
     def __init__(self):
         pass
 
+    @classmethod
+    def get_class_name(cls):
+        return cls.__name__
+
 
 class BaseResponse(JsonSerializable):
     def __init__(self):
@@ -27,6 +31,10 @@ class BaseHandler(ABC):
 class BaseNotification:
     def __init__(self):
         pass
+
+    @classmethod
+    def get_class_name(cls):
+        return cls.__name__
 
 
 class BaseNotificationHandler(ABC):
@@ -155,6 +163,3 @@ class BaseCacheProvider(ABC):
     @abstractmethod
     def check_connection(self):
         pass
-
-
-

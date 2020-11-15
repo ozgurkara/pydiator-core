@@ -34,7 +34,7 @@ class Mediatr(BaseMediatr):
         return await pipelines[0].handle(req)
 
     async def publish(self, notification: BaseNotification, throw_exception: bool = False):
-        notification_type_name = type(notification).__name__
+        notification_type_name = notification.get_class_name()
         notifications_obj = self.__container.get_notifications()
         if notification_type_name not in notifications_obj:
             raise Exception(f"mediatr_container_has_not_contain_any_notification_handler_for:{notification_type_name}")

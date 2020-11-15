@@ -8,7 +8,8 @@ class LogPipeline(BasePipeline):
         self.serializer = SerializerFactory.get_serializer()
 
     async def handle(self, req: BaseRequest) -> object:
-        print(f"LogPipeline:handle:{type(req).__name__}")
+        req_type_name = req.get_class_name()
+        print(f"LogPipeline:handle:{req_type_name}")
 
         if self.next() is None:
             raise Exception("pydiator_log_pipeline_has_no_next_pipeline")

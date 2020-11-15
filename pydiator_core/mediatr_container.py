@@ -9,18 +9,26 @@ class MediatrContainer(BaseMediatrContainer):
         self.__requests = {}
         self.__notifications = {}
         self.__pipelines = []
+        self.__base_request_get_class_method_name = BaseRequest.get_class_name.__name__
+        self.__base_notification_get_class_method_name = BaseNotification.get_class_name.__name__
 
-    def register_request(self, req: BaseRequest, handler: BaseHandler):
-        if not isinstance(req, BaseRequest) or not isinstance(handler, BaseHandler):
+    def register_request(self, req: type, handler: BaseHandler):
+        if not isinstance(handler, BaseHandler):
             return
 
-        self.__requests[type(req).__name__] = handler
+        if hasattr(req, self.__base_request_get_class_method_name) and callable(
+                getattr(req, self.__base_request_get_class_method_name)):
+            req_type = getattr(req, self.__base_request_get_class_method_name)()
+            self.__requests[req_type] = handler
 
     def register_pipeline(self, pipeline: BasePipeline):
         self.__pipelines.append(pipeline)
 
-    def register_notification(self, notification: BaseNotification, handlers: List[BaseNotificationHandler]):
-        self.__notifications[type(notification).__name__] = handlers
+    def register_notification(self, notification: type, handlers: List[BaseNotificationHandler]):
+        if hasattr(notification, self.__base_notification_get_class_method_name) and callable(
+                getattr(notification, self.__base_notification_get_class_method_name)):
+            notification_type = getattr(notification, self.__base_notification_get_class_method_name)()
+            self.__notifications[notification_type] = handlers
 
     def get_requests(self):
         return self.__requests

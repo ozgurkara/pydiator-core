@@ -1,25 +1,4 @@
-
-# What is the pydiatr?
-`Pydiatr is an in-app communication method. 
-
-It provides that developing the code as an aspect. Also, it supports clean architecture infrastructure
-
-It is using design patterns such as chain of responsibility, mediator, singleton.
-
-Pydiatr provides which advantages to developers and project?
-* Testable code
-* Use case support
-* Aspect programming (Authorization, Validation, Cache, Logging, Tracer etc.)
-* Clean architecture
-* Expandable architecture via pipeline
-* Independent framework
-`
-
-
-# How to set up pydiatr?
-
-```python
-# get_by_id_handler
+import asyncio
 
 from pydiator_core.interfaces import BaseRequest, BaseResponse, BaseHandler
 
@@ -41,8 +20,6 @@ class GetByIdHandler(BaseHandler):
         return GetByIdResponse(id=req.id, title="hello pydiatr")
 
 
-
-import asyncio
 from pydiator_core.mediatr import pydiator
 from pydiator_core.mediatr_container import MediatrContainer
 
@@ -59,13 +36,3 @@ if __name__ == "__main__":
     response: GetByIdResponse = loop.run_until_complete(pydiator.send(GetByIdRequest(id=1)))
     loop.close()
     print(response.to_json())
-
-
-```
-
-# How to run Unit & Integration Test
-`coverage run --source app/ -m pytest`
-
-`coverage report -m`
-
-`coverage html`
