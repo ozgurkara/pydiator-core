@@ -1,6 +1,6 @@
 
 # What is the pydiatr?
-`Pydiatr is an in-app communication method. 
+Pydiatr is an in-app communication method. 
 
 It provides that developing the code as an aspect. Also, it supports clean architecture infrastructure
 
@@ -13,7 +13,7 @@ Pydiatr provides which advantages to developers and project?
 * Clean architecture
 * Expandable architecture via pipeline
 * Independent framework
-`
+
 
 
 # How to set up pydiatr?
@@ -63,9 +63,8 @@ if __name__ == "__main__":
 
 ```
 
-# How to run Unit & Integration Test
-`coverage run --source app/ -m pytest`
+# How to run the Unit Tests
+`install tests/requirements.txt`
 
-`coverage report -m`
+`pytest tests/`
 
-`coverage html`
