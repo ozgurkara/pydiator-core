@@ -1,6 +1,6 @@
 
 # What is the pydiatr?
-`Pydiatr is an in-app communication method. 
+Pydiatr is an in-app communication method. 
 
 It provides that developing the code as an aspect. Also, it supports clean architecture infrastructure
 
