@@ -8,7 +8,6 @@ class DefaultPipeline(BasePipeline):
 
     async def handle(self, req: BaseRequest) -> object:
         req_type_name = req.get_class_name()
-        print(f"DefaultPipeline:handle:{req_type_name}")
         handler = self.mediatr_container.get_requests().get(req_type_name, None)
         if handler is None:
             raise Exception(f"handler_not_found_for_request_:{req_type_name}")

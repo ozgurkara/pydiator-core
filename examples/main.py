@@ -1,6 +1,7 @@
 import asyncio
 
 from pydiator_core.interfaces import BaseRequest, BaseResponse, BaseHandler
+from pydiator_core.pipelines.log_pipeline import LogPipeline
 
 
 class GetByIdRequest(BaseRequest):
@@ -27,6 +28,7 @@ from pydiator_core.mediatr_container import MediatrContainer
 def set_up_pydiator():
     container = MediatrContainer()
     container.register_request(GetByIdRequest, GetByIdHandler())
+    container.register_pipeline(LogPipeline())
     pydiator.ready(container=container)
 
 

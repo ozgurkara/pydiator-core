@@ -1,15 +1,16 @@
 from typing import List
 from pydiator_core.interfaces import BaseRequest, BasePipeline
+from pydiator_core.logger import LoggerFactory
 from pydiator_core.serializer import SerializerFactory
 
 
 class LogPipeline(BasePipeline):
     def __init__(self):
         self.serializer = SerializerFactory.get_serializer()
+        self.logger = LoggerFactory.get_logger()
 
     async def handle(self, req: BaseRequest) -> object:
         req_type_name = req.get_class_name()
-        print(f"LogPipeline:handle:{req_type_name}")
 
         if self.next() is None:
             raise Exception("pydiator_log_pipeline_has_no_next_pipeline")
@@ -26,6 +27,6 @@ class LogPipeline(BasePipeline):
             "res": _response
         }
 
-        print("log", log_obj)
+        self.logger.log(source=self.__class__.__name__, message=req_type_name, data=log_obj)
 
         return response
