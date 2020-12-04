@@ -2,6 +2,7 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 from pydiator_core.interfaces import BaseNotification
+from pydiator_core.logger import LoggerFactory, BaseLogger
 from pydiator_core.mediatr import Mediatr
 from pydiator_core.serializer import SerializerFactory, BaseSerializer
 from tests.base_test_case import BaseTestCase, TestRequest, TestResponse, FakeMediatrContainer, TestNotification
@@ -11,6 +12,7 @@ class TestMediatrContainer(BaseTestCase):
 
     def setUp(self):
         SerializerFactory.set_serializer(None)
+        LoggerFactory.set_logger(None)
 
     def tearDown(self):
         pass
@@ -96,6 +98,32 @@ class TestMediatrContainer(BaseTestCase):
         assert not isinstance(SerializerFactory.get_serializer(), BaseSerializer)
         assert SerializerFactory.get_serializer() == {}
         assert len(container.get_pipelines()) == 1
+
+    def test_ready_when_container_and_logger_set(self):
+        # Given
+        container = FakeMediatrContainer()
+        mediatr = Mediatr()
+
+        # When
+        mediatr.ready(container=container, logger={})
+
+        # Then
+        assert mediatr.is_ready is True
+        assert not isinstance(LoggerFactory.get_logger(), BaseLogger)
+        assert LoggerFactory.get_logger() == {}
+        assert len(container.get_pipelines()) == 1
+
+    def test_ready_when_logger_is_none(self):
+        # Given
+        container = FakeMediatrContainer()
+        mediatr = Mediatr()
+
+        # When
+        mediatr.ready(container=container)
+
+        # Then
+        assert mediatr.is_ready is True
+        assert isinstance(LoggerFactory.get_logger(), BaseLogger)
 
     def test_send_raise_exception_when_container_is_none(self):
         # Given

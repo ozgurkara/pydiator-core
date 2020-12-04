@@ -1,5 +1,6 @@
 from pydiator_core.interfaces import BaseRequest, BaseNotification, BaseMediatr, BaseMediatrContainer
 from pydiator_core.default_pipeline import DefaultPipeline
+from pydiator_core.logger import LoggerFactory, BaseLogger
 from pydiator_core.serializer import BaseSerializer, SerializerFactory
 
 
@@ -9,7 +10,7 @@ class Mediatr(BaseMediatr):
         self.__container = None
         self.is_ready = False
 
-    def ready(self, container: BaseMediatrContainer, serializer: BaseSerializer = None):
+    def ready(self, container: BaseMediatrContainer, serializer: BaseSerializer = None, logger: BaseLogger = None):
         if self.is_ready:
             return
 
@@ -18,8 +19,12 @@ class Mediatr(BaseMediatr):
 
         self.__container = container
         self.__container.prepare_pipes(DefaultPipeline(self.__container))
+
         if serializer is not None:
             SerializerFactory.set_serializer(serializer)
+
+        if logger is not None:
+            LoggerFactory.set_logger(logger)
 
         self.is_ready = True
 
