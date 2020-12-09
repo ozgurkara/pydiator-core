@@ -17,73 +17,118 @@ Pydiator provides which advantages to developers and project?
 ![alt text](assets/pydiator_flow.png)
  
 # How it works? 
-Pydiator knows 3 object types. 
+Pydiator knows 4 object types. 
 These are;
 
 1- **Request object** 
-   * is used for calling the use case.
-   * it should be inherited from **BaseRequest**
+   * Is used for calling the use case.
+   * It should be inherited from **BaseRequest**
    ```python 
     class GetSampleByIdRequest(BaseRequest):
         def __init__(self, id: int):
             self.id = id
    ```
-   * this object is sent to use case via pydiator
+<hr>
+
+2- **Response object**
+   * Is used for returning from use case
+   * It should be inherited from **BaseResponse**
    ```python
-    pydiator.send(SampleRequest(id=1))
-   ```
+   class GetSampleByIdResponse(BaseResponse):
+        def __init__(self, id: int, title: str):
+            self.id = id
+            self.title = title 
+   ``` 
 
-2- **Use Case**
-   * includes logic codes
-   * it should be inherited from **BaseHandler**  
+<hr>
 
+3- **Use Case**
+   * Includes logic codes    
+   * It should be inherited from **BaseHandler**
+   * It takes one parameter to handle. The parameter should be inherited **BaseRequest** 
+   ```python
+   class GetSampleByIdUseCase(BaseHandler):
+        async def handle(self, req: GetSampleByIdRequest):
+            # related codes are here such as business
+            return GetSampleByIdResponse(id=req.id, title="hello pydiatr")     
+   ``` 
 
-# How to set up pydiator?
+<hr>
 
+**What is the relation between these 3 object types?**
+
+Every use case object only knows a request object
+
+Every request object is only used by one use case object
+
+<br/>
+
+**How is the use case run?**
+
+Should be had a particular map between the request object and the use case object.
+
+Mapping example;
 ```python
-# get_by_id_handler
+    def set_up_pydiator():
+        container = MediatrContainer()
+        container.register_request(GetSampleByIdRequest, GetSampleByIdUseCase())
+        #container.register_request(xRequest, xUseCase())
+        pydiator.ready(container=container)
+```
 
-from pydiator_core.interfaces import BaseRequest, BaseResponse, BaseHandler
-
-
-class GetByIdRequest(BaseRequest):
-    def __init__(self, id: int):
-        self.id = id
-
-
-class GetByIdResponse(BaseResponse):
-    def __init__(self, id: int, title: str):
-        self.id = id
-        self.title = title
-
-
-class GetByIdUseCase(BaseHandler):
-    async def handle(self, req: GetByIdRequest):
-        # related codes are here such as business
-        return GetByIdResponse(id=req.id, title="hello pydiatr")
-
-
-
-import asyncio
-from pydiator_core.mediatr import pydiator
-from pydiator_core.mediatr_container import MediatrContainer
-
-
-def set_up_pydiator():
-    container = MediatrContainer()
-    container.register_request(GetByIdRequest, GetByIdHandler())
-    pydiator.ready(container=container)
-
-
-if __name__ == "__main__":
-    set_up_pydiator()
+Calling example;
+```python
+    await pydiator.send(GetByIdRequest(id=1))
+````
+or
+```python    
     loop = asyncio.new_event_loop()
     response: GetByIdResponse = loop.run_until_complete(pydiator.send(GetByIdRequest(id=1)))
     loop.close()
     print(response.to_json())
-
-
 ```
+
+<hr>
+
+4- **Pipeline**
+
+The purpose of the pipeline is to manage the code as an aspect. 
+For instance, you want to write a log for the request and the response of every use case. You can do it via a pipeline easily. You can see the sample log pipeline at this link.
+
+You can create a lot of pipelines such as cache pipeline, validation pipeline, tracer pipeline, authorization pipeline etc. 
+
+Also, you can create the pipeline much as you want but you should not forget that every use case will be used in this pipeline.
+
+<br/>
+
+You can add the pipeline to pipelines such as;
+```python
+    def set_up_pydiator():
+        container = MediatrContainer()        
+        container.register_pipeline(LogPipeline())
+        #container.register_pipeline(xPipeline())
+        pydiator.ready(container=container)
+````
+<br/>
+
+***How can I write custom pipeline?***
+   * Every pipeline  should be inherited ***BasePipeline***
+   * Sample pipeline
+```python
+    class SamplePipeline(BasePipeline):
+        def __init__(self):
+            pass
+    
+        async def handle(self, req: BaseRequest) -> object:
+            
+            # before executed pipeline and uce case
+
+            response = await self.next().handle(req)
+    
+            # after executed next pipeline and use case            
+
+            return response
+```   
 
 # How to run the Unit Tests
 `install tests/requirements.txt`

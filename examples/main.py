@@ -15,7 +15,7 @@ class GetSampleByIdResponse(BaseResponse):
         self.title = title
 
 
-class GetByIdUseCase(BaseHandler):
+class GetSampleByIdUseCase(BaseHandler):
     async def handle(self, req: GetSampleByIdRequest):
         # related codes are here such as business
         return GetSampleByIdResponse(id=req.id, title="hello pydiatr")
@@ -27,7 +27,7 @@ from pydiator_core.mediatr_container import MediatrContainer
 
 def set_up_pydiator():
     container = MediatrContainer()
-    container.register_request(GetSampleByIdRequest, GetByIdUseCase())
+    container.register_request(GetSampleByIdRequest, GetSampleByIdUseCase())
     container.register_pipeline(LogPipeline())
     pydiator.ready(container=container)
 
