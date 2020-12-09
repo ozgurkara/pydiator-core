@@ -20,7 +20,7 @@ Pydiator provides which advantages to developers and project?
 Pydiator knows 4 object types. 
 These are;
 
-1- **Request object** 
+**1- Request object** 
    * Is used for calling the use case.
    * It should be inherited from **BaseRequest**
    ```python 
@@ -30,7 +30,7 @@ These are;
    ```
 <hr>
 
-2- **Response object**
+**2- Response object**
    * Is used for returning from use case
    * It should be inherited from **BaseResponse**
    ```python
@@ -42,7 +42,7 @@ These are;
 
 <hr>
 
-3- **Use Case**
+**3- Use Case**
    * Includes logic codes    
    * It should be inherited from **BaseHandler**
    * It takes one parameter to handle. The parameter should be inherited **BaseRequest** 
@@ -90,7 +90,7 @@ or
 
 <hr>
 
-4- **Pipeline**
+**4- Pipeline**
 
 The purpose of the pipeline is to manage the code as an aspect. 
 For instance, you want to write a log for the request and the response of every use case. You can do it via a pipeline easily. You can see the sample log pipeline at this link.
