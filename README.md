@@ -2,11 +2,7 @@
 
 https://pypi.org/project/pydiator-core/
 
-add your requirements.txt ***pydiator-core***
-
-or
-
-***pip install pydiator-core***
+add your requirements.txt ***pydiator-core*** or run the ***pip install pydiator-core*** command
 
 
 # What is the pydiator?
