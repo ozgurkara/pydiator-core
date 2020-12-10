@@ -3,6 +3,9 @@
 https://pypi.org/project/pydiator-core/
 
 add your requirements.txt
+pydiator-core
+
+or
 
 ***pip install pydiator-core***
 
