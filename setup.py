@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pydiator-core-test",
-    version="0.0.8",
+    name="pydiator-core",
+    version="1.0.1",
     author="Özgür Kara",
     author_email="ozgurkara85@gmail.com",
     description="",

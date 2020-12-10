@@ -14,8 +14,8 @@ Pydiator provides which advantages to developers and project?
 * Expandable architecture via pipeline
 * Is independent framework
  
-![alt text](assets/pydiator_flow.png)
- 
+![pydiator](https://raw.githubusercontent.com/ozgurkara/pydiator-core/master/assets/pydiator_flow.png)
+
 # How it works? 
 Pydiator knows 4 object types. 
 These are;
