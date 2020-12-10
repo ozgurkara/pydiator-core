@@ -2,9 +2,7 @@
 
 https://pypi.org/project/pydiator-core/
 
-add your requirements.txt
-
-***pydiator-core***
+add your requirements.txt ***pydiator-core***
 
 or
 
