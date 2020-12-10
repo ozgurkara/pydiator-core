@@ -1,3 +1,11 @@
+# Installation
+
+https://pypi.org/project/pydiator-core/
+
+add your requirements.txt
+
+***pip install pydiator-core***
+
 
 # What is the pydiator?
 Pydiator is an in-app communication method. 
