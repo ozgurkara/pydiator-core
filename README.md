@@ -4,6 +4,11 @@ https://pypi.org/project/pydiator-core/
 
 add your requirements.txt ***pydiator-core*** or run the ***pip install pydiator-core*** command
 
+# Examples 
+
+Console : https://github.com/ozgurkara/pydiator-core/blob/master/examples/main.py
+
+Fastapi : https://github.com/ozgurkara/fastapi-pydiator
 
 # What is the pydiator?
 Pydiator is an in-app communication method. 
@@ -19,6 +24,7 @@ Pydiator provides which advantages to developers and project?
 * Has Clean architecture support
 * Expandable architecture via pipeline
 * Is independent framework
+* Has SOLID principles
  
 ![pydiator](https://raw.githubusercontent.com/ozgurkara/pydiator-core/master/assets/pydiator_flow.png)
 
