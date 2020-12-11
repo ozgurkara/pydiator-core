@@ -31,7 +31,7 @@ jobs:
       
       # Runs a single command using the runners shell
       - name: Pip Install
-        run: pip install -r ./test/requirements.txt
+        run: ls && pip install -r tests/requirements.txt
       
       - name: Test
         run: pytest tests/
