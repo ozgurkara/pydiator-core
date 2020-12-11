@@ -29,6 +29,11 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
       
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f tests/requirements.txt ]; then pip install -r tests/requirements.txt; fi
+        
       # Runs a single command using the runners shell
       - name: Pip Install
         run: python -m pip install -r tests/requirements.txt
