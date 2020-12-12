@@ -41,8 +41,22 @@ jobs:
       - name: Unit Test
         run: pytest tests/
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Coverage
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          coverage run --source pydiator_core/ -m pytest
+          coverage xml
+          
+      - name: Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          flag-name: Unit Test
+
+  coveralls_finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel-finished: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
