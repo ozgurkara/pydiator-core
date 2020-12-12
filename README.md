@@ -1,4 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/ozgurkara/pydiator-core/badge.svg?branch=master)](https://coveralls.io/github/ozgurkara/pydiator-core?branch=master)
+
+![example event parameter](https://github.com/ozgurkara/pydiator-core/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/ozgurkara/pydiator-core/badge.svg?branch=master)](https://coveralls.io/github/ozgurkara/pydiator-core?branch=master)
 
 # Installation
 
