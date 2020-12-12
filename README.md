@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/ozgurkara/pydiator-core/badge.svg?branch=master)](https://coveralls.io/github/ozgurkara/pydiator-core?branch=master)
+
 # Installation
 
 https://pypi.org/project/pydiator-core/
