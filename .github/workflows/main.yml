@@ -41,6 +41,11 @@ jobs:
       - name: Unit Test
         run: pytest tests/
 
+      - name: Coverage
+        run: |
+          coverage run --source pydiator_core/ -m pytest
+          coverage xml
+
   coveralls_finish:
     needs: build
     runs-on: ubuntu-latest
@@ -49,4 +54,6 @@ jobs:
       uses: AndreMiras/coveralls-python-action@develop
       with:
         parallel-finished: true
-        github-token: ${{ secrets.GITHUB_TOKEN }} 
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.xml
+        base-path: ""
