@@ -55,5 +55,4 @@ jobs:
       with:
         parallel-finished: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: coverage.xml
         base-path: ""
