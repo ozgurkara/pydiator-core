@@ -45,6 +45,11 @@ jobs:
         run: |
           coverage run --source pydiator_core/ -m pytest
           coverage xml
+          
+      - name: Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          flag-name: Unit Test
 
   coveralls_finish:
     needs: build
@@ -55,4 +60,3 @@ jobs:
       with:
         parallel-finished: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        base-path: ""
