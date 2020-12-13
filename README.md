@@ -28,6 +28,7 @@ Pydiator provides which advantages to developers and project?
 * Expandable architecture via pipeline
 * Is independent framework
 * Has SOLID principles
+* Has publisher subscriber infrastructure
  
 ![pydiator](https://raw.githubusercontent.com/ozgurkara/pydiator-core/master/assets/pydiator_flow.png)
 
@@ -144,6 +145,23 @@ You can add the pipeline to pipelines such as;
 
             return response
 ```   
+
+
+# How to use the publisher subscriber feature
+
+***What is the observer feature?***
+
+This feature runs with observer design pattern.
+
+**How to define the observer pattern?**
+
+The observer pattern is a software design pattern in which an object, named the subject, maintains a list of its dependents, called observers, and notifies them automatically of any state changes, usually by calling one of their methods.
+
+<br/>
+
+**How to use this pattern with the pydiator?**
+
+
 
 # How to run the Unit Tests
 `install tests/requirements.txt`
