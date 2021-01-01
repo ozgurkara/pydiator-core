@@ -9,7 +9,7 @@ add your requirements.txt ***pydiator-core*** or run the ***pip install pydiator
 
 # Examples 
 
-Console : https://github.com/ozgurkara/pydiator-core/blob/master/examples/main.py
+Directly : https://github.com/ozgurkara/pydiator-core/blob/master/examples/main.py
 
 Fastapi : https://github.com/ozgurkara/fastapi-pydiator
 
@@ -127,7 +127,7 @@ You can add the pipeline to pipelines such as;
 ````
 <br/>
 
-***How can I write custom pipeline?***
+***How can you write custom pipeline?***
    * Every pipeline  should be inherited ***BasePipeline***
    * Sample pipeline
 ```python
@@ -151,16 +151,30 @@ You can add the pipeline to pipelines such as;
 
 ***What is the observer feature?***
 
-This feature runs with observer design pattern.
+This feature runs as pub-sub design pattern.
 
-**How to define the observer pattern?**
+**What is the pub-sub pattern?**
 
-The observer pattern is a software design pattern in which an object, named the subject, maintains a list of its dependents, called observers, and notifies them automatically of any state changes, usually by calling one of their methods.
-
+publish-subscribe is a messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, called subscribers, but instead, categorize published messages into classes without knowledge of which subscribers if any, there may be. Similarly, subscribers express interest in one or more classes and only receive messages that are of interest, without knowledge of which publishers, if any, there are.
 <br/>
 
 **How to use this pattern with the pydiator?**
 
+You can see the details that via this link https://github.com/ozgurkara/pydiator-core/blob/master/examples/pub_sub.py
+
+```python
+def set_up_pydiator():
+    container = MediatrContainer()
+    container.register_notification(SamplePublisherRequest, [Sample1Subscriber(), Sample2Subscriber(),
+                                                             Sample3Subscriber()])
+    pydiator.ready(container=container)
+
+if __name__ == "__main__":
+    set_up_pydiator()
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(pydiator.publish(SamplePublisherRequest(id=1)))
+    loop.close()
+```
 
 
 # How to run the Unit Tests
