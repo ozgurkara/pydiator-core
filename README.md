@@ -21,13 +21,13 @@ It provides that developing the code as an aspect. Also, it supports clean archi
 It is using design patterns such as chain of responsibility, mediator, singleton.
 
 Pydiator provides which advantages to developers and project?
-* Is testable
-* Has Use case support
-* Has Aspect programming (Authorization, Validation, Cache, Logging, Tracer etc.) support
-* Has Clean architecture support
+* Testable
+* Use case support
+* Aspect programming (Authorization, Validation, Cache, Logging, Tracer etc.) support
+* Clean architecture
 * Expandable architecture via pipeline
-* Is independent framework
-* Has SOLID principles
+* Independent framework
+* SOLID principles
 * Has publisher subscriber infrastructure
  
 ![pydiator](https://raw.githubusercontent.com/ozgurkara/pydiator-core/master/assets/pydiator_flow.png)
