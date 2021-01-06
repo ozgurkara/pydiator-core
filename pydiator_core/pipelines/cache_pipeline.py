@@ -7,6 +7,9 @@ class CachePipeline(BasePipeline):
         self.cache_provider = cache_provider
 
     async def handle(self, req: BaseRequest) -> object:
+        if self.cache_provider is None:
+            return await self.next().handle(req)
+
         if self.next() is None:
             raise Exception("pydiator_cache_pipeline_has_no_next_pipeline")
 

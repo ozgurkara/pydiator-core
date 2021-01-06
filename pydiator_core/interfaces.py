@@ -49,7 +49,6 @@ class BaseNotificationHandler(ABC):
 class CacheType(enum.Enum):
     NONE = 0
     DISTRIBUTED = 1
-    MEMORY = 2
 
 
 class BaseCacheable(ABC):

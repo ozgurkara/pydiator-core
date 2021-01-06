@@ -3,7 +3,7 @@ from typing import List
 from unittest import TestCase
 
 from pydiator_core.interfaces import BaseRequest, BaseResponse, BaseHandler, BasePipeline, BaseNotification, \
-    BaseNotificationHandler, BaseCacheable, CacheType
+    BaseNotificationHandler, BaseCacheable, CacheType, BaseCacheProvider
 from pydiator_core.mediatr_container import MediatrContainer, BaseMediatrContainer
 from pydiator_core.mediatr import pydiator
 
@@ -106,3 +106,20 @@ class FakeMediatrContainer(BaseMediatrContainer):
 
     def get_pipelines(self):
         return self.__pipelines
+
+
+class FakeCacheProvider(BaseCacheProvider):
+    def add(self, key: str, value, expires):
+        pass
+
+    def get(self, key: str):
+        pass
+
+    def exist(self, key: str):
+        pass
+
+    def delete(self, key: str):
+        pass
+
+    def check_connection(self):
+        pass

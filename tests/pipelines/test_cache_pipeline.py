@@ -2,7 +2,8 @@ from unittest.mock import MagicMock
 
 from pydiator_core.interfaces import CacheType
 from pydiator_core.pipelines.cache_pipeline import CachePipeline
-from tests.base_test_case import BaseTestCase, TestRequest, TestPipeline, TestRequestWithCacheable, TestResponse
+from tests.base_test_case import BaseTestCase, TestRequest, TestPipeline, TestRequestWithCacheable, TestResponse, \
+    FakeCacheProvider
 from pydiator_core.serializer import SerializerFactory
 
 
@@ -13,9 +14,29 @@ class TestCachePipeline(BaseTestCase):
     def tearDown(self):
         pass
 
+    def test_handle_when_cache_provider_is_none(self):
+        # Given
+        next_response = TestResponse(success=True)
+
+        async def next_handle(req):
+            return next_response
+
+        mock_test_pipeline = MagicMock()
+        mock_test_pipeline.handle = next_handle
+
+        cache_pipeline = CachePipeline(None)
+        cache_pipeline.set_next(mock_test_pipeline)
+
+        # When
+        response = self.async_loop(cache_pipeline.handle(TestRequest()))
+
+        # Then
+        assert response is not None
+        assert response == next_response
+
     def test_handle_return_exception_when_next_is_none(self):
         # Given
-        cache_pipeline = CachePipeline(None)
+        cache_pipeline = CachePipeline(FakeCacheProvider())
 
         # When
         with self.assertRaises(Exception) as context:
@@ -31,7 +52,7 @@ class TestCachePipeline(BaseTestCase):
         async def next_handle(req):
             return next_response
 
-        cache_pipeline = CachePipeline(None)
+        cache_pipeline = CachePipeline(FakeCacheProvider())
         mock_test_pipeline = MagicMock()
         mock_test_pipeline.handle = next_handle
         cache_pipeline.set_next(mock_test_pipeline)
@@ -53,7 +74,7 @@ class TestCachePipeline(BaseTestCase):
         async def next_handle(req):
             return next_response
 
-        cache_pipeline = CachePipeline(None)
+        cache_pipeline = CachePipeline(FakeCacheProvider())
         mock_test_pipeline = MagicMock()
         mock_test_pipeline.handle = next_handle
         cache_pipeline.set_next(mock_test_pipeline)
@@ -76,7 +97,7 @@ class TestCachePipeline(BaseTestCase):
         mock_test_pipeline = MagicMock()
         mock_test_pipeline.handle = next_handle
 
-        cache_pipeline = CachePipeline(None)
+        cache_pipeline = CachePipeline(FakeCacheProvider())
         cache_pipeline.set_next(mock_test_pipeline)
 
         # When
@@ -144,7 +165,7 @@ class TestCachePipeline(BaseTestCase):
         mock_test_pipeline = MagicMock()
         mock_test_pipeline.handle = next_handle
 
-        cache_pipeline = CachePipeline(None)
+        cache_pipeline = CachePipeline(FakeCacheProvider())
         cache_pipeline.set_next(mock_test_pipeline)
 
         # When
