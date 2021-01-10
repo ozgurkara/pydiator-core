@@ -7,33 +7,35 @@ class CachePipeline(BasePipeline):
         self.cache_provider = cache_provider
 
     async def handle(self, req: BaseRequest) -> object:
-        if self.cache_provider is None:
-            return await self.next().handle(req)
-
         if self.next() is None:
             raise Exception("pydiator_cache_pipeline_has_no_next_pipeline")
 
-        response = None
+        next_handle = getattr(self.next(), "handle", None)
+        if next_handle is None or not callable(next_handle):
+            raise Exception("handle_function_of_next_pipeline_is_not_valid_for_cache_pipeline")
+
+        if self.cache_provider is None:
+            return await next_handle(req)
 
         if isinstance(req, BaseCacheable):
-            if req.is_no_cache() is False:
+            cache_type = req.get_cache_type()
+            if cache_type != CacheType.NONE and req.is_no_cache() is False:
                 cache_key = req.get_cache_key()
                 if cache_key is not None and cache_key != "":
-                    cache_type = req.get_cache_type()
                     if cache_type == CacheType.DISTRIBUTED:
                         cached_obj = self.__get_from_cache(cache_key)
                         if cached_obj is not None:
                             return cached_obj
 
-                    cache_duration = req.get_cache_duration()
-                    response = await self.next().handle(req)
-                    if response is not None and response != "" and cache_duration > 0:
-                        self.__add_to_cache(response, cache_key, cache_duration)
+                        response = await next_handle(req)
 
-        if response is None:
-            response = await self.next().handle(req)
+                        cache_duration = req.get_cache_duration()
+                        if response is not None and response != "" and cache_duration > 0:
+                            self.__add_to_cache(response, cache_key, cache_duration)
 
-        return response
+                        return response
+
+        return await next_handle(req)
 
     def __get_from_cache(self, cache_key) -> object:
         cached_obj_str = self.cache_provider.get(cache_key)

@@ -14,6 +14,17 @@ class TestCachePipeline(BaseTestCase):
     def tearDown(self):
         pass
 
+    def test_handle_return_exception_when_next_is_none(self):
+        # Given
+        cache_pipeline = CachePipeline(FakeCacheProvider())
+
+        # When
+        with self.assertRaises(Exception) as context:
+            self.async_loop(cache_pipeline.handle(TestRequest()))
+
+        # Then
+        assert context.exception.args[0] == 'pydiator_cache_pipeline_has_no_next_pipeline'
+
     def test_handle_when_cache_provider_is_none(self):
         # Given
         next_response = TestResponse(success=True)
@@ -34,16 +45,35 @@ class TestCachePipeline(BaseTestCase):
         assert response is not None
         assert response == next_response
 
-    def test_handle_return_exception_when_next_is_none(self):
+    def test_handle_when_next_handle_is_none(self):
         # Given
-        cache_pipeline = CachePipeline(FakeCacheProvider())
+        mock_test_pipeline = MagicMock()
+        mock_test_pipeline.handle = None
+
+        cache_pipeline = CachePipeline(None)
+        cache_pipeline.set_next(mock_test_pipeline)
 
         # When
         with self.assertRaises(Exception) as context:
             self.async_loop(cache_pipeline.handle(TestRequest()))
 
         # Then
-        assert context.exception.args[0] == 'pydiator_cache_pipeline_has_no_next_pipeline'
+        assert context.exception.args[0] == 'handle_function_of_next_pipeline_is_not_valid_for_cache_pipeline'
+
+    def test_handle_when_next_handle_is_not_callable(self):
+        # Given
+        mock_test_pipeline = MagicMock()
+        mock_test_pipeline.handle = 1
+
+        cache_pipeline = CachePipeline(None)
+        cache_pipeline.set_next(mock_test_pipeline)
+
+        # When
+        with self.assertRaises(Exception) as context:
+            self.async_loop(cache_pipeline.handle(TestRequest()))
+
+        # Then
+        assert context.exception.args[0] == 'handle_function_of_next_pipeline_is_not_valid_for_cache_pipeline'
 
     def test_handle_when_req_is_no_cache(self):
         # Given
@@ -59,6 +89,27 @@ class TestCachePipeline(BaseTestCase):
 
         test_request = TestRequestWithCacheable("cache_key", 1, CacheType.DISTRIBUTED)
         test_request.set_no_cache()
+
+        # When
+        response = self.async_loop(cache_pipeline.handle(test_request))
+
+        # Then
+        assert response is not None
+        assert response == next_response
+
+    def test_handle_when_req_cache_type_is_none(self):
+        # Given
+        next_response = TestResponse(success=True)
+
+        async def next_handle(req):
+            return next_response
+
+        cache_pipeline = CachePipeline(FakeCacheProvider())
+        mock_test_pipeline = MagicMock()
+        mock_test_pipeline.handle = next_handle
+        cache_pipeline.set_next(mock_test_pipeline)
+
+        test_request = TestRequestWithCacheable("cache_key", 1, CacheType.NONE)
 
         # When
         response = self.async_loop(cache_pipeline.handle(test_request))
