@@ -37,7 +37,7 @@ class TestDefaultPipeline(BaseTestCase):
     def test_handle_return_handle_response(self):
         # Given
         container = MediatrContainer()
-        container.register_request(TestRequest(), TestHandler())
+        container.register_request(TestRequest, TestHandler())
         self.pipeline = DefaultPipeline(container)
 
         # When

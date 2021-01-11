@@ -6,7 +6,7 @@ class CachePipeline(BasePipeline):
     def __init__(self, cache_provider: BaseCacheProvider) -> None:
         self.cache_provider = cache_provider
 
-    async def handle(self, req: BaseRequest) -> object:
+    async def handle(self, req: BaseRequest, **kwargs) -> object:
         if self.next() is None:
             raise Exception("pydiator_cache_pipeline_has_no_next_pipeline")
 
@@ -15,7 +15,7 @@ class CachePipeline(BasePipeline):
             raise Exception("handle_function_of_next_pipeline_is_not_valid_for_cache_pipeline")
 
         if self.cache_provider is None:
-            return await next_handle(req)
+            return await next_handle(req=req, **kwargs)
 
         if isinstance(req, BaseCacheable):
             cache_type = req.get_cache_type()
@@ -27,7 +27,7 @@ class CachePipeline(BasePipeline):
                         if cached_obj is not None:
                             return cached_obj
 
-                        response = await next_handle(req)
+                        response = await next_handle(req, **kwargs)
 
                         cache_duration = req.get_cache_duration()
                         if response is not None and response != "" and cache_duration > 0:
@@ -35,7 +35,7 @@ class CachePipeline(BasePipeline):
 
                         return response
 
-        return await next_handle(req)
+        return await next_handle(req, **kwargs)
 
     def __get_from_cache(self, cache_key) -> object:
         cached_obj_str = self.cache_provider.get(cache_key)

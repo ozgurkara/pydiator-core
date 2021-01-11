@@ -24,6 +24,21 @@ class TestLogPipeline(BaseTestCase):
         # Then
         assert context.exception.args[0] == 'pydiator_log_pipeline_has_no_next_pipeline'
 
+    def test_handle_return_exception_when_next_handle_is_none(self):
+        # Given
+        mock_test_pipeline = MagicMock()
+        mock_test_pipeline.handle = None
+
+        log_pipeline = LogPipeline()
+        log_pipeline.set_next(mock_test_pipeline)
+
+        # When
+        with self.assertRaises(Exception) as context:
+            self.async_loop(log_pipeline.handle(TestRequest()))
+
+        # Then
+        assert context.exception.args[0] == 'handle_function_of_next_pipeline_is_not_valid_for_log_pipeline'
+
     def test_handle_when_response_is_str(self):
         # Given
         next_response_text = "next_response"

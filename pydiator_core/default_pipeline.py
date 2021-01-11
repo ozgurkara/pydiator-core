@@ -6,7 +6,7 @@ class DefaultPipeline(BasePipeline):
     def __init__(self, mediatr_container: BaseMediatrContainer):
         self.mediatr_container = mediatr_container
 
-    async def handle(self, req: BaseRequest) -> object:
+    async def handle(self, req: BaseRequest, **kwargs) -> object:
         req_type_name = req.get_class_name()
         handler = self.mediatr_container.get_requests().get(req_type_name, None)
         if handler is None:

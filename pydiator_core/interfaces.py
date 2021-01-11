@@ -93,7 +93,7 @@ class BasePipeline(ABC):
         return self._next is not None
 
     @abstractmethod
-    async def handle(self, req: BaseRequest) -> object:
+    async def handle(self, req: BaseRequest, **kwargs) -> object:
         pass
 
 

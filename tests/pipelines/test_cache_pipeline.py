@@ -25,7 +25,7 @@ class TestCachePipeline(BaseTestCase):
         # Then
         assert context.exception.args[0] == 'pydiator_cache_pipeline_has_no_next_pipeline'
 
-    def test_handle_when_cache_provider_is_none(self):
+    def test_handle_continue_when_cache_provider_is_none(self):
         # Given
         next_response = TestResponse(success=True)
 
@@ -45,7 +45,7 @@ class TestCachePipeline(BaseTestCase):
         assert response is not None
         assert response == next_response
 
-    def test_handle_when_next_handle_is_none(self):
+    def test_handle_return_exception_when_next_handle_is_none(self):
         # Given
         mock_test_pipeline = MagicMock()
         mock_test_pipeline.handle = None

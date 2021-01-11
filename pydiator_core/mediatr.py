@@ -28,7 +28,7 @@ class Mediatr(BaseMediatr):
 
         self.is_ready = True
 
-    async def send(self, req: BaseRequest) -> object:
+    async def send(self, req: BaseRequest, **kwargs) -> object:
         if self.__container is None:
             raise Exception("mediatr_container_is_none")
 
@@ -36,7 +36,7 @@ class Mediatr(BaseMediatr):
         if len(pipelines) == 0:
             raise Exception("mediatr_container_has_not_contain_any_pipeline")
 
-        return await pipelines[0].handle(req)
+        return await pipelines[0].handle(req=req, **kwargs)
 
     async def publish(self, notification: BaseNotification, throw_exception: bool = False):
         notification_type_name = notification.get_class_name()
