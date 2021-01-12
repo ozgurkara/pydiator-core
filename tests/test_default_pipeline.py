@@ -3,7 +3,7 @@ from unittest import mock
 from pydiator_core.default_pipeline import DefaultPipeline
 from pydiator_core.interfaces import BaseResponse
 from pydiator_core.mediatr_container import MediatrContainer
-from tests.base_test_case import BaseTestCase, TestRequest, TestHandler
+from tests.base_test_case import BaseTestCase, TestRequest, TestHandler, TestSyncHandler
 
 
 class TestDefaultPipeline(BaseTestCase):
@@ -38,6 +38,18 @@ class TestDefaultPipeline(BaseTestCase):
         # Given
         container = MediatrContainer()
         container.register_request(TestRequest, TestHandler())
+        self.pipeline = DefaultPipeline(container)
+
+        # When
+        response = self.async_loop(self.pipeline.handle(req=TestRequest()))
+
+        # Then
+        assert isinstance(response, BaseResponse)
+
+    def test_handle_return_handle_response_when_handle_is_sync(self):
+        # Given
+        container = MediatrContainer()
+        container.register_request(TestRequest, TestSyncHandler())
         self.pipeline = DefaultPipeline(container)
 
         # When

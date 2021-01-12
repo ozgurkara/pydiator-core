@@ -60,6 +60,11 @@ class TestHandler(BaseHandler):
         return TestResponse(success=True)
 
 
+class TestSyncHandler(BaseHandler):
+    def handle(self, req: BaseRequest):
+        return TestResponse(success=True)
+
+
 class TestPipeline(BasePipeline):
     def __init__(self, response_success):
         self.response_success = response_success
