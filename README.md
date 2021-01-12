@@ -127,7 +127,7 @@ You can add the pipeline to pipelines such as;
 ````
 <br/>
 
-***How can you write custom pipeline?***
+***How can you write a custom pipeline?***
    * Every pipeline  should be inherited ***BasePipeline***
    * Sample pipeline
 ```python
@@ -147,9 +147,9 @@ You can add the pipeline to pipelines such as;
 ```   
 
 
-# How to use the publisher subscriber feature
+# How to use the notification-subscriber feature
 
-***What is the observer feature?***
+***What is the notification-subscriber feature?***
 
 This feature runs as pub-sub design pattern.
 
@@ -160,12 +160,12 @@ publish-subscribe is a messaging pattern where senders of messages, called publi
 
 **How to use this pattern with the pydiator?**
 
-You can see the details that via this link https://github.com/ozgurkara/pydiator-core/blob/master/examples/pub_sub.py
+You can see the details that via this link https://github.com/ozgurkara/pydiator-core/blob/master/examples/notification.py
 
 ```python
 def set_up_pydiator():
     container = MediatrContainer()
-    container.register_notification(SamplePublisherRequest, [Sample1Subscriber(), Sample2Subscriber(),
+    container.register_notification(SampleNotification, [Sample1Subscriber(), Sample2Subscriber(),
                                                              Sample3Subscriber()])
     pydiator.ready(container=container)
 
