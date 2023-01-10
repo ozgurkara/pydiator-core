@@ -63,6 +63,9 @@ class Serializer(BaseSerializer):
             if isinstance(obj, datetime.datetime):
                 return obj.isoformat()
 
+            if isinstance(obj, object):
+                return obj.__dict__
+
             return json.JSONEncoder.default(self, obj)
 
 

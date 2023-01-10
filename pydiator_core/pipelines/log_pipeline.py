@@ -6,10 +6,11 @@ from pydiator_core.serializer import SerializerFactory
 
 class LogPipeline(BasePipeline):
     def __init__(self):
-        self.serializer = SerializerFactory.get_serializer()
+        self.serializer = None
         self.logger = LoggerFactory.get_logger()
 
     async def handle(self, req: BaseRequest, **kwargs) -> object:
+        self.serializer = SerializerFactory.get_serializer()
 
         if self.next() is None:
             raise Exception("pydiator_log_pipeline_has_no_next_pipeline")

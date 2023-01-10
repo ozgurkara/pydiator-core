@@ -1,7 +1,7 @@
 import datetime
-import json
 import uuid
 from decimal import Decimal
+from typing import List
 from uuid import UUID
 
 from pydiator_core.interfaces import BaseResponse
@@ -69,21 +69,33 @@ class TestSerializer(BaseTestCase):
 
     def test_deserialize(self):
         # Given
+        class TestItem(BaseResponse):
+            def __init__(self, id: int, title: str):
+                self.id = id,
+                self.title = title
+
         class TestMixResponse(BaseResponse):
-            def __init__(self, text: str, success: bool, dec: Decimal, uid: UUID, dt: datetime.datetime):
+            def __init__(self, text: str, success: bool, dec: Decimal, uid: UUID, dt: datetime.datetime,
+                         item: TestItem, items: List[TestItem]):
                 self.text = text
                 self.success = success
                 self.dec = dec
                 self.uid = uid
                 self.dt = dt
+                self.item = item
+                self.items = items
 
         time = datetime.datetime.now()
         uid = uuid.uuid4()
+        item = TestItem(3, "title3")
+        items = [TestItem(1, "title1"), TestItem(2, "title2")]
         mix_response = TestMixResponse(text="bla bla",
                                        success=True,
                                        dec=Decimal.from_float(1.123),
                                        uid=uid,
-                                       dt=time)
+                                       dt=time,
+                                       item=item,
+                                       items=items)
 
         # When
         response = mix_response.to_json()
@@ -95,3 +107,5 @@ class TestSerializer(BaseTestCase):
         assert 1.12 == response["dec"]
         assert str(mix_response.uid) == response["uid"]
         assert time.isoformat() == str(response["dt"])
+        assert item.title == response["item"]["title"]
+        assert len(items) == len(response["items"])
