@@ -76,16 +76,19 @@ class TestSerializer(BaseTestCase):
 
         class TestMixResponse(BaseResponse):
             def __init__(self, text: str, success: bool, dec: Decimal, uid: UUID, dt: datetime.datetime,
+                         date: datetime.date,
                          item: TestItem, items: List[TestItem]):
                 self.text = text
                 self.success = success
                 self.dec = dec
                 self.uid = uid
                 self.dt = dt
+                self.date = date
                 self.item = item
                 self.items = items
 
         time = datetime.datetime.now()
+        date = datetime.datetime.date(time)
         uid = uuid.uuid4()
         item = TestItem(3, "title3")
         items = [TestItem(1, "title1"), TestItem(2, "title2")]
@@ -94,6 +97,7 @@ class TestSerializer(BaseTestCase):
                                        dec=Decimal.from_float(1.123),
                                        uid=uid,
                                        dt=time,
+                                       date=date,
                                        item=item,
                                        items=items)
 
@@ -107,5 +111,6 @@ class TestSerializer(BaseTestCase):
         assert 1.12 == response["dec"]
         assert str(mix_response.uid) == response["uid"]
         assert time.isoformat() == str(response["dt"])
+        assert datetime.datetime.date(time).isoformat() == str(response["date"])
         assert item.title == response["item"]["title"]
         assert len(items) == len(response["items"])

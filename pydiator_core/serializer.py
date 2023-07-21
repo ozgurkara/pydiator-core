@@ -60,7 +60,7 @@ class Serializer(BaseSerializer):
             if isinstance(obj, UUID):
                 return str(obj)
 
-            if isinstance(obj, datetime.datetime):
+            if isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
                 return obj.isoformat()
 
             if isinstance(obj, object):
